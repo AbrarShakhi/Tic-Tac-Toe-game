@@ -161,6 +161,7 @@ int main()
         {
             _printBoard(player);
             _getTurn(&move);
+            system("cls");
 
             if (_checkAndSetTurn(player, move))
             {

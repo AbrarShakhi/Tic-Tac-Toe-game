@@ -4,7 +4,7 @@
 // #include <string.h>
 #include <stdbool.h>
 #include <time.h>
-// #include <unistd.h>
+#include <unistd.h>
 // #include <windows.h>
 // #include <math.h>
 
@@ -146,6 +146,24 @@ void _nextPlayer(char *player)
     *player = (*player == 'X') ? 'O' : 'X';
 }
 
+void _loading(char roll, char move)
+{
+    short i = 1;
+    do
+    {
+        system("cls");
+        printf("++|++===========================++|++\n");
+        printf("  |                               |\n");
+        printf("  |              '%c'              |\n", roll);
+        printf("  |                               |\n");
+        printf("++|++===========================++|++\n");
+        printf("              loading..\n");
+        sleep(1);
+        roll = move;
+    } while (i--);
+    
+}
+
 int main()
 {
     bool isContinue = true;
@@ -159,6 +177,7 @@ int main()
         {
             _printBoard(player);
             _getTurn(&move);
+            _loading(player, move);
 
             if (_checkAndSetTurn(player, move))
             {
@@ -168,12 +187,17 @@ int main()
                 {
                     printf("          previously:\n");
                     printf("          player: %c, move: %c\n", player, move);
-                    printf("          now: \n");
                     _nextPlayer(&player);
+                    printf("          now: %c\n", player);
                 }
             }
             else
+            {
+                printf("          previously:\n");
+                printf("          player: %c, move: %c\n", player, move);
                 _wrongInputMsg();
+                printf("          now: %c\n", player);
+            }
         } while (isContinue);
 
     } while (_exitTheGame() == 1);

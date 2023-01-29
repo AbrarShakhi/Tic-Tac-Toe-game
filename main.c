@@ -32,8 +32,8 @@ int _exitTheGame()
     printf("++|++===========================++|++\n");
     printf("           Enter your choice: ");
     short YorN;
-    scanf("%d", &YorN);
     fflush(stdin);
+    scanf("%d", &YorN);
     return YorN;
 }
 
@@ -45,20 +45,26 @@ void _welcomeScreen()
     printf("  |                               |\n");
     printf("++|++===========================++|++\n");
     printf("        Prees any key to start");
+    fflush(stdin);
     getch();
 }
 
 char _randomXO()
 {
     srand(time(0));
-    if (rand() % 2 == 1) return 'X';
-    else return 'O';
+    if (rand() % 2 == 1)
+        return 'X';
+    else
+        return 'O';
 }
 
 void _getTurn(char *move)
 {
-    scanf("%c", move);
     fflush(stdin);
+    scanf("%c", move);
+    if (*move == '\n')
+        _getTurn(&move);
+    return;
 }
 
 bool _checkAndSetTurn(char player, char move)
@@ -161,7 +167,7 @@ void _loading(char roll, char move)
         sleep(1);
         roll = move;
     } while (i--);
-    
+    fflush(stdin);
 }
 
 int main()
@@ -183,7 +189,7 @@ int main()
             {
                 system("cls");
                 isContinue = _processGame(player, move);
-                if(isContinue == true)
+                if (isContinue == true)
                 {
                     printf("          previously:\n");
                     printf("          player: %c, move: %c\n", player, move);

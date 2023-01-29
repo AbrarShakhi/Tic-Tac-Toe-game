@@ -21,7 +21,7 @@ void _printBoard(char player)
     printf("  |        | %c | %c | %c |          |\n", board[2][0], board[2][1], board[2][2]);
     printf("  |        |---|---|---|          |\n");
     printf("++|++===========================++|++\n");
-    printf("           %c enter your turn: ", player);
+    printf("        '%c' enter your turn: ", player);
 }
 
 int _exitTheGame()
@@ -88,7 +88,7 @@ void _winningMsg(char player)
 {
     printf("++|++===========================++|++\n");
     printf("  |                               |\n");
-    printf("  |        %c WON THE GAME         |\n", player);
+    printf("  |      '%c' WON THE GAME         |\n", player);
     printf("  |                               |\n");
     printf("++|++===========================++|++\n");
 }
@@ -136,11 +136,9 @@ bool _processGame(char player, char move)
 
 void _wrongInputMsg()
 {
+    printf("\n");
     printf("++|++===========================++|++\n");
-    printf("  |                               |\n");
     printf("  |          WRONG INPUT          |\n");
-    printf("  |                               |\n");
-    printf("++|++===========================++|++\n");
 }
 
 void _nextPlayer(char *player)
@@ -150,7 +148,7 @@ void _nextPlayer(char *player)
 
 int main()
 {
-    bool isContinue;
+    bool isContinue = true;
     char player, move;
     _welcomeScreen();
     do
@@ -161,13 +159,18 @@ int main()
         {
             _printBoard(player);
             _getTurn(&move);
-            system("cls");
 
             if (_checkAndSetTurn(player, move))
             {
+                system("cls");
                 isContinue = _processGame(player, move);
                 if(isContinue == true)
+                {
+                    printf("          previously:\n");
+                    printf("          player: %c, move: %c\n", player, move);
+                    printf("          now: \n");
                     _nextPlayer(&player);
+                }
             }
             else
                 _wrongInputMsg();

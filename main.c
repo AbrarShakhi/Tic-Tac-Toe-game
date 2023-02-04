@@ -62,9 +62,6 @@ void _getTurn(char *move)
 {
     fflush(stdin);
     scanf("%c", move);
-    if (*move == '\n')
-        _getTurn(&move);
-    return;
 }
 
 bool _checkAndSetTurn(char player, char move)
@@ -101,15 +98,10 @@ void _winningMsg(char player)
 
 short _drawOrNot()
 {
-    short x;
+    short x = 0;
     for (size_t i = 0; i < 3; i++)
-    {
         for (size_t j = 0; j < 3; j++)
-        {
-            if (board[i][j] == 'X' || board[i][j] == 'O')
-                x++;
-        }
-    }
+            if (board[i][j] == 'X' || board[i][j] == 'O') x++;
     return x;
 }
 
@@ -124,13 +116,13 @@ bool _processGame(char player, char move)
     bool c1, c2, c3, r1, r2, r3, x1, x2, d;
 
     x1 = (player == board[0][0]) && (player == board[1][1]) && (player == board[2][2]);
-    x2 = (player == board[2][0]) && (player == board[1][1]) && (player == board[2][2]);
+    x2 = (player == board[2][0]) && (player == board[1][1]) && (player == board[0][2]);
     r1 = (player == board[0][0]) && (player == board[0][1]) && (player == board[0][2]);
     r2 = (player == board[1][0]) && (player == board[1][1]) && (player == board[1][2]);
     r3 = (player == board[2][0]) && (player == board[2][1]) && (player == board[2][2]);
-    c1 = (player == board[0][0]) && (player == board[0][1]) && (player == board[0][2]);
-    c2 = (player == board[1][0]) && (player == board[1][1]) && (player == board[1][2]);
-    c3 = (player == board[2][0]) && (player == board[2][1]) && (player == board[2][2]);
+    c1 = (player == board[0][0]) && (player == board[1][0]) && (player == board[2][0]);
+    c2 = (player == board[0][1]) && (player == board[1][1]) && (player == board[2][1]);
+    c3 = (player == board[0][2]) && (player == board[1][2]) && (player == board[2][2]);
 
     if (x1 || x2 || c1 || c2 || c3 || r1 || r2 || r3)
     {
@@ -154,20 +146,32 @@ void _nextPlayer(char *player)
 
 void _loading(char roll, char move)
 {
-    short i = 1;
-    do
-    {
-        system("cls");
-        printf("++|++===========================++|++\n");
-        printf("  |                               |\n");
-        printf("  |              '%c'              |\n", roll);
-        printf("  |                               |\n");
-        printf("++|++===========================++|++\n");
-        printf("              loading..\n");
-        sleep(1);
-        roll = move;
-    } while (i--);
-    fflush(stdin);
+    system("cls");
+    printf("++|++===========================++|++\n");
+    printf("  |                               |\n");
+    printf("  |              '%c'              |\n", roll);
+    printf("  |                               |\n");
+    printf("++|++===========================++|++\n");
+    printf("              loading..\n");
+    sleep(1);
+}
+
+void _innitBoardAgain()
+{
+    char *ptr;
+    ptr = &board[0][0];
+    char k = '1';
+    for (size_t i = 0; i < 9; i++)
+        *ptr++ = k++;
+}
+
+void _innitBoardToEmpty()
+{
+    char *ptr;
+    ptr = &board[0][0];
+    char k = ' ';
+    for (size_t i = 0; i < 9; i++)
+        *ptr++ = k;
 }
 
 int main()
@@ -183,28 +187,19 @@ int main()
         {
             _printBoard(player);
             _getTurn(&move);
-            _loading(player, move);
 
             if (_checkAndSetTurn(player, move))
             {
+                _loading(player, move);
                 system("cls");
                 isContinue = _processGame(player, move);
                 if (isContinue == true)
-                {
-                    printf("          previously:\n");
-                    printf("          player: %c, move: %c\n", player, move);
                     _nextPlayer(&player);
-                    printf("          now: %c\n", player);
-                }
             }
             else
-            {
-                printf("          previously:\n");
-                printf("          player: %c, move: %c\n", player, move);
                 _wrongInputMsg();
-                printf("          now: %c\n", player);
-            }
         } while (isContinue);
+        _innitBoardAgain();
 
     } while (_exitTheGame() == 1);
 
